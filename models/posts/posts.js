@@ -7,13 +7,13 @@ const PostsSchema = new Schema({
   postType: { type: String, require: true }, // 文章类型 -- 转载 原创 连载
   postOriginUrl: { type: String }, // 原文链接
   content: { type: String, require: true}, // 文章内容
-  cover: { tyep: String, default: null }, // 封面
-  author: { type: Schema.Types.ObjectId, ref: 'User'}, // 作者
+  cover: { type: String, default: null }, // 封面
+  author: { type: Schema.Types.ObjectId, require: true, ref: 'User'}, // 作者
   review: { type: Number, default: 0 }, // review
-  like: { type: Number, default: 0},
+  like: { type: Number, user: Array, default: 0 },
   comments: { type: Schema.Types.ObjectId, ref: 'Comments'}, // comments
-  createAt: { type: Date, default: Date.now },
-  updateAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 })
 
 module.exports = mongoose.model('Posts', PostsSchema)

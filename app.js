@@ -6,12 +6,14 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const session = require('koa-session')
+const db = require('./models/mogondb')
+const koaBody = require('koa-body')
 
 const { frontendRouter, backendRouter } = require('./routes')
 
 // error handler
 onerror(app)
-app.keys = ['wayne']
+app.keys = ['wayne'] // cookie的签名
 const CONFIG = {
   key: 'koa:wayne',
   maxAge: 7 * 24 * 60 * 60 * 1000 // 7天
@@ -29,14 +31,28 @@ const CONFIG = {
 }
 
 // middlewares
-app.use(bodyparser({
-  enableTypes:['json', 'form', 'text']
-}))
+// app.use(bodyparser({
+//   enableTypes:['json', 'form', 'text']
+// }))
 app.use(json())
 app.use(logger())
 
 app.use(require('koa-static')(__dirname + '/public'))
 
+// koaBodyOption
+const koaBodyOption = {
+  formLimit: 2 * 1048576, // 最大1M
+  textLimit: 2 * 1048576,
+  formidable: {
+    keepExtensions: true, // 带拓展名上传，否则上传的会是二进制文件而不是图片文件
+    onFileBegin(name, file) {
+      file.path = __dirname + '/public/images/' + file.name; // 重命名上传文件
+    },
+    uploadDir: __dirname + '/public/images'
+  }, // 输出到images文件夹
+  multipart: true,
+}
+app.use(koaBody(koaBodyOption))
 // cookies
 app.use(session(CONFIG, app))
 
@@ -51,6 +67,10 @@ app.use(async (ctx, next) => {
   const ms = new Date() - start
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
+
+// middlewares
+app.use(require('./middlewares/res')) // 统一响应数据处理
+app.use(require('./middlewares/tracer')) // 日志打印
 
 // routes
 app.use(frontendRouter.routes(), frontendRouter.allowedMethods()) // 前台路由

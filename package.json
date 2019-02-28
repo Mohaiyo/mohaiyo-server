@@ -9,9 +9,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "ali-oss": "^6.1.0",
+    "co": "^4.6.0",
+    "dayjs": "^1.8.6",
     "debug": "^2.6.3",
     "ejs": "~2.3.3",
+    "env2": "^2.2.2",
     "koa": "^2.2.0",
+    "koa-body": "^4.0.8",
     "koa-bodyparser": "^3.2.0",
     "koa-convert": "^1.2.0",
     "koa-json": "^2.0.2",
@@ -20,7 +25,11 @@
     "koa-router": "^7.1.1",
     "koa-session": "^5.10.1",
     "koa-static": "^3.0.0",
-    "koa-views": "^5.2.1"
+    "koa-views": "^5.2.1",
+    "md5": "^2.2.1",
+    "mongoose": "^5.4.14",
+    "qiniu": "^7.2.1",
+    "tracer": "^0.9.8"
   },
   "devDependencies": {
     "eslint": "^5.14.1",
