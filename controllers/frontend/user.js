@@ -1,8 +1,8 @@
-const md5 = require('md5')
-const UserModel = require('../../models/users/users')
-const PostsModel = require('../../models/posts/posts')
-// const UserModel = mongoose.model('User') ?
-// const PostsModel = mongoose.model('Posts') ?
+import md5 from 'md5'
+import {
+  UsersModel,
+  PostsModel
+} from '../../models'
 
 class UserContrller {
   static async register (ctx) { // 注册
@@ -16,11 +16,11 @@ class UserContrller {
     if (password !== againPassword) {
       return ctx.error({msg: '两次输入的密码不一致'})
     }
-    const isHaveUser = await UserModel.findOne({ name })
-    if (isHaveUser) {
+    const isExit = await UsersModel.findOne({ name })
+    if (isExit) {
       return ctx.error({msg: '用户名已经存在'})
     }
-    const res = await UserModel.create({name, password: md5(password), nickName})
+    const res = await UsersModel.create({name, password: md5(password), nickName})
     if (!res) {
       return ctx.error({msg: '注册失败'})
     } else {
@@ -33,7 +33,7 @@ class UserContrller {
     if (!name || !password) {
       return ctx.error({ msg: '用户名或者密码不能为空'})
     }
-    const user = await UserModel.findOne({name, password: md5(password)}, {password: 0})
+    const user = await UsersModel.findOne({name, password: md5(password)}, {password: 0})
     if (!user) {
       return ctx.error({msg: '用户名或者密码错误'})
     }
@@ -75,11 +75,11 @@ class UserContrller {
     if (!userid || !oldpassword || !newpassword) {
       return ctx.error({msg: '传参有误'})
     }
-    const user = await UserModel.findOne({_id: userid, password: md5(oldpassword)})
+    const user = await UsersModel.findOne({_id: userid, password: md5(oldpassword)})
     if (!user) {
       return ctx.error({msg: '旧密码输入有误'})
     }
-    const modifyRes = await UserModel.update({_id: userid, password: md5(oldpassword)}, {password: md5(newpassword)})
+    const modifyRes = await UsersModel.update({_id: userid, password: md5(oldpassword)}, {password: md5(newpassword)})
     if (!modifyRes) {
       return ctx.error({msg: '密码更新失败'})
     }
@@ -91,7 +91,7 @@ class UserContrller {
     if (!userid) {
       return ctx.error({msg: '用户id不能为空'})
     }
-    const user = await UserModel.findById(userid).select({password: 0})
+    const user = await UsersModel.findById(userid).select({password: 0})
     if (!user) {
       return ctx.error({msg: '该用户不存在'})
     }
@@ -121,16 +121,16 @@ class UserContrller {
     if (!userid) {
       return ctx.error({msg: '用户id不能为空'})
     }
-    const user = await UserModel.findById(userid).select({password: 0})
+    const user = await UsersModel.findById(userid).select({password: 0})
     if (!user) {
       return ctx.error({msg: '该用户不存在'})
     }
-    const updateRes = await UserModel.findByIdAndUpdate(userid, {email, bio})
+    const updateRes = await UsersModel.findByIdAndUpdate(userid, {email, bio})
     if (!updateRes) {
       return ctx.error({msg: '更新用户基本信息失败'})
     }
     
-    const userInfo = await UserModel.findById(userid).select({password: 0, _id: 0, createdAt: 0, updatedAt: 0})
+    const userInfo = await UsersModel.findById(userid).select({password: 0, _id: 0, createdAt: 0, updatedAt: 0})
     if (!userInfo) {
       return ctx.error({msg: '查找用户信息失败'})
     }
@@ -149,7 +149,7 @@ class UserContrller {
     if (!url) {
       return ctx.error({msg: '上传头像失败'})
     }
-    const updatRes = await UserModel.findByIdAndUpdate(id, { avatar: url })
+    const updatRes = await UsersModel.findByIdAndUpdate(id, { avatar: url })
     if (!updatRes) {
       return ctx.error({msg: '用户头像更新失败'})
     }

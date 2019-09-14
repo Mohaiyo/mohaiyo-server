@@ -1,8 +1,10 @@
-const PostModel = require('../../models/posts/posts')
-const CommentsModel = require('../../models/posts/comments')
-const CategoryModel = require('../../models/posts/category')
-const ParentCategoryModel = require('../../models/posts/parentCategory')
-const dayjs = require('dayjs')
+import {
+  PostsModel,
+  CommentsModel,
+  CategoryModel,
+  ParentCategoryModel
+} from '../../models/index'
+import dayjs from 'dayjs'
 class PostsController {
   static async createPost(ctx) {
     const { user } = ctx.session.user
@@ -16,7 +18,7 @@ class PostsController {
     }
     data.author = _id
     data.like = { num: 0, user: []}
-    const res = await PostModel.create(data)
+    const res = await PostsModel.create(data)
     if (!res) {
       return ctx.error({msg: '创建文章失败'})
     }
@@ -40,23 +42,23 @@ class PostsController {
     let catehot
     let hot
     const skipNum = (Number(page - 1)) * Number(size)
-    const totals = await PostModel.find(params).count()
-    const lists = await PostModel.find(params).sort({ createdAt: -1, review: -1}).skip(skipNum).limit(Number(size)).populate('author', {nickName: 1, avatar: 1}).populate('comments')
+    const totals = await PostsModel.find(params).count()
+    const lists = await PostsModel.find(params).sort({ createdAt: -1, review: -1}).skip(skipNum).limit(Number(size)).populate('author', {nickName: 1, avatar: 1}).populate('comments')
     if (!lists) {
       return ctx.error({msg: '暂无数据'})
     }
 
-    const weekhotLists = await PostModel.find({ cover: {$exists: true, $ne: null}, createdAt: {$in: [nowdate, weekdate]}})
+    const weekhotLists = await PostsModel.find({ cover: {$exists: true, $ne: null}, createdAt: {$in: [nowdate, weekdate]}})
     if (weekhotLists && weekhotLists.length > 3) {
       // 一周内发布的 前4条有封面图的阅读量最多的热门文章
-      hot = await PostModel.find({ cover: {$exists: true, $ne: null}, createdAt: {$in: [nowdate, weekdate]}}).sort({review: -1}).limit(4).populate('author', { nickname: 1, avatar: 1})
+      hot = await PostsModel.find({ cover: {$exists: true, $ne: null}, createdAt: {$in: [nowdate, weekdate]}}).sort({review: -1}).limit(4).populate('author', { nickname: 1, avatar: 1})
     } else {
       // 如果不足4条就取所有的文章中前4条有封面图的、阅读量最多热门文章
-      hot = await PostModel.find({ cover: {$exists: true, $ne: null} }).sort({ review: -1}).limit(4).populate('author', { nickname: 1, avatar: 1})
+      hot = await PostsModel.find({ cover: {$exists: true, $ne: null} }).sort({ review: -1}).limit(4).populate('author', { nickname: 1, avatar: 1})
     }
     
     if (categoryId) {
-      catehot = await PostModel.find({categoryId}, { title: 1, review: 1, author: 1}).sort({review: -1}).limit(10)
+      catehot = await PostsModel.find({categoryId}, { title: 1, review: 1, author: 1}).sort({review: -1}).limit(10)
       if (!catehot) {
         return ctx.error({ msg: 暂无数据})
       }
@@ -97,7 +99,7 @@ class PostsController {
     }
     const postid = data.post_id
     const fields = {$push: {'comments': postid}}
-    const updatePostRes = await PostModel.findByIdAndUpdate(postid, fields)
+    const updatePostRes = await PostsModel.findByIdAndUpdate(postid, fields)
     if (!updatePostRes) {
       return ctx.error({ msg: '评论失败'})
     }
@@ -136,14 +138,14 @@ class PostsController {
     if (!postid) {
       return ctx.error({msg: '传参有误'})
     }
-    const detail = await PostModel.findById(postid).populate('author', {password: 0}).populate('comments')
+    const detail = await PostsModel.findById(postid).populate('author', {password: 0}).populate('comments')
     if (!detail) {
       return ctx.error({ msg: '该文章不存在或者已经被原作者删除~'})
     }
     console.log(detail)
     let review = detail.review + 1
     const fields = {$set: { review }}
-    await PostModel.findByIdAndUpdate(postid, fields).exec()
+    await PostsModel.findByIdAndUpdate(postid, fields).exec()
 
     if (!page) {
       page = 1
@@ -157,7 +159,7 @@ class PostsController {
     const comments = await CommentsModel.find({post_id: postid}).sort({ createdAt: -1, review: -1 }).skip(skipNum).limit(Number(size))
     
     // 点赞数以及点赞的状态
-    const likeRes = await PostModel.findById(postid, {like: 1})
+    const likeRes = await PostsModel.findById(postid, {like: 1})
     if (!likeRes && !likeRes.like) {
       return ctx.error({ msg: '查找文章点赞数据失败'})
     }
@@ -189,7 +191,7 @@ class PostsController {
     const { _id } = user
     const { postid } = ctx.request.body
 
-    const likeRes = await PostModel.findById(postid, {like: 1})
+    const likeRes = await PostsModel.findById(postid, {like: 1})
     if (!likeRes && !likeRes.like) {
       return ctx.error({ msg: '查找文章点赞数据失败'})
     }
@@ -218,7 +220,7 @@ class PostsController {
       user: likeUserArr
     }
 
-    const likeUpdateRes = await PostModel.findByIdAndUpdate(postid, {$set: {like: updateData}}, {new: true}).populate('author',{ password:0 }).populate('comments')
+    const likeUpdateRes = await PostsModel.findByIdAndUpdate(postid, {$set: {like: updateData}}, {new: true}).populate('author',{ password:0 }).populate('comments')
     if (!likeUpdateRes) {
       return ctx.error({ msg: '点赞/取消点赞失败'})
     }
@@ -243,7 +245,7 @@ class PostsController {
       return ctx.error({ msg: '用户未登录'})
     }
     const { id } = ctx.request.body
-    const deleteRes = await PostModel.findByIdAndDelete(id)
+    const deleteRes = await PostsModel.findByIdAndDelete(id)
     if (!deleteRes) {
       return ctx.error({msg: '删除失败'})
     }

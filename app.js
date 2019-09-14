@@ -1,16 +1,17 @@
-const Koa = require('koa')
+import Koa from 'koa'
+import views from 'koa-views'
+import json from 'koa-json'
+import onerror from 'koa-onerror'
+// import bodyparser from 'koa-bodyparser'
+import logger from 'koa-logger'
+import session from 'koa-session'
+import koaBody from 'koa-body'
+import koaStatic from 'koa-static'
+import db from './models/mogondb'
+import frontendRouter from './routes/frontend'
+import backendRouter from './routes/backend'
+
 const app = new Koa()
-const views = require('koa-views')
-const json = require('koa-json')
-const onerror = require('koa-onerror')
-const bodyparser = require('koa-bodyparser')
-const logger = require('koa-logger')
-const session = require('koa-session')
-const db = require('./models/mogondb')
-const koaBody = require('koa-body')
-
-const { frontendRouter, backendRouter } = require('./routes')
-
 // error handler
 onerror(app)
 app.keys = ['wayne'] // cookie的签名
@@ -37,11 +38,11 @@ const CONFIG = {
 app.use(json())
 app.use(logger())
 
-app.use(require('koa-static')(__dirname + '/public'))
+app.use(koaStatic(__dirname + '/public'))
 
 // koaBodyOption
 const koaBodyOption = {
-  formLimit: 2 * 1048576, // 最大1M
+  formLimit: 2 * 1048576,
   textLimit: 2 * 1048576,
   formidable: {
     keepExtensions: true, // 带拓展名上传，否则上传的会是二进制文件而不是图片文件

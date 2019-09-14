@@ -8,5 +8,6 @@ const option = {
 mongoose.connect(uri, option).then(_ => {
     console.log('mongodb数据库连接成功')
 }).catch(err => {
+    console.log(err)
     console.log('数据库连接失败')
 })

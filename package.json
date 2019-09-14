@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node bin/www",
-    "dev": "NODE_ENV=development ./node_modules/.bin/nodemon bin/www",
-    "prd": "pm2 start NODE_ENV=production bin/www",
+    "start": "node bin/run",
+    "dev": "NODE_ENV=development ./node_modules/.bin/nodemon bin/run",
+    "prd": "pm2 start NODE_ENV=production bin/run",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -28,7 +28,9 @@
     "koa-views": "^5.2.1",
     "md5": "^2.2.1",
     "mongoose": "^5.4.14",
+    "nodemon": "^1.19.0",
     "qiniu": "^7.2.1",
+    "runkoa": "^1.5.9",
     "tracer": "^0.9.8"
   },
   "devDependencies": {
@@ -37,7 +39,6 @@
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "nodemon": "^1.8.1"
+    "eslint-plugin-standard": "^4.0.0"
   }
 }

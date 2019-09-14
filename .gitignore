@@ -8,6 +8,7 @@ package-lock.json
 
 .env
 .env.prod
+release.sh
 
 # Editor directories and files
 .idea

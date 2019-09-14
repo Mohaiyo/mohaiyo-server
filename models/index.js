@@ -1,18 +1,18 @@
-const Category = require('../models/posts/category')
-const Comments = require('../models/posts/comments')
-const ParentCategory = require('../models/posts/parentCategory')
-const Reply = require('../models/posts/reply')
-const Posts = require('../models/posts/posts')
+import CategoryModel from './posts/category'
+import CommentsModel from './posts/comments'
+import ParentCategoryModel from './posts/parentCategory'
+import ReplyModel from './posts/reply'
+import PostsModel from './posts/posts'
 
-const Users = require('../models/users')
-const Admin = require('../models/admin')
+import UsersModel from './users/users'
+import AdminModel from './users/admin'
 
-module.exports = {
-  Category,
-  Comments,
-  ParentCategory,
-  Reply,
-  Posts,
-  Users,
-  Admin
+export {
+  CategoryModel,
+  CommentsModel,
+  ParentCategoryModel,
+  ReplyModel,
+  PostsModel,
+  UsersModel,
+  AdminModel
 }

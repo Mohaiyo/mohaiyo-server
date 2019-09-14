@@ -1,8 +1,8 @@
-const router = require('koa-router')()
-const upload = require('../middlewares/upload')
-const UserController = require('../controllers/frontend/user')
-const PostsController = require('../controllers/frontend/posts')
-
+import koaRouter from 'koa-router'
+import upload from '../middlewares/upload'
+import UserController from '../controllers/frontend/user'
+import PostsController from '../controllers/frontend/posts'
+const router = koaRouter()
 router.prefix('/api')
 router
   .get('/', async (ctx, next) => {
@@ -25,4 +25,5 @@ router
   .post('/user/editPost', PostsController.editPost) // 编辑文章
   .post('/user/deletePost', PostsController.deletePost) // 删除文章
   .post('/user/deleteComment', PostsController.deleteComment) // 删除评论
-module.exports = router
+
+export default router

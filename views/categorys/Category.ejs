@@ -1,0 +1,114 @@
+
+<script>
+  function edAcate(element){
+    var cateid = element.getAttribute('id');
+    var name = element.getAttribute('name');
+    var info = element.getAttribute('info');
+    $('#acate_id').val(cateid);
+    $('.ecatename').val(name);
+    $('.ecateinfo').val(info);
+    var selectlist = document.getElementById('cateselect').options
+    for(var i=0; i<selectlist.length;i++){
+      if(selectlist[i].value==cateid){
+        selectlist[i].setAttribute('selected','selected');
+      }
+    }
+    $(".mask").removeClass('hidden');
+    $("#acateeditor").removeClass('hidden');
+  }
+</script>
+
+<div class="container cate"> 
+  <div class="top">
+    <button class="btn green" id="acate" onclick="showform('#acateform')">添加分类</button>
+   </div>
+   <div class="tabel">
+    <table class="cate-table">
+   <thead class="list-head">
+   	<tr>
+   	 <th>序号</th>	
+   	 <th>分类名称</th>
+   	 <th>所属分类</th>
+   	 <th>简述</th>
+   	 <th>更新时间</th>
+     <th>操作</th>
+   	</tr>
+    </thead>
+    <tbody class="list-body">
+      <% for(var i=0; i<data.length; i++) {%>
+       <tr>
+        <td><%= i+1 %></td>  
+        <td> <%= data[i].name %> </td>  
+        <td> <%= data[i].parentCate.name %> </td>
+        <td> <%= data[i].info %> </td>
+        <td> <%= dayjs(data[i].createdAt).format('YYYY-MM-DD HH:mm') %> </td>
+        <td>
+        <a onclick="edAcate(this)" 
+         id=<%= data[i]._id %>
+         name=<%= data[i].name %>
+         info=<%= data[i].info %> >编辑</a>
+         <a href="/server/posts/deleteCate/<%= data[i]._id %>?subType=<%= subType %>&type=<%= type %>">删除</a>
+        </td>  
+       </tr>
+      <% } %>
+    </tbody>
+   </table>
+   <div class="pagination"></div>
+   <form action="/server/posts/createSubcate" id="acateform" method="post" class="cateform hidden">
+   <div class="form-box">
+    <div class="title">
+     <h3>创建分类</h3>
+    </div>
+    <div class="list">
+       <label>所属分类: </label>
+       <select name="parentCate">
+       <% topCate.forEach(function(item){ %>
+        <option value="<%= item._id %>" class="item" required="required"> <%= item.name %> </option>
+       <% }) %>
+       </select>
+    </div>
+    <div class="list">
+       <label>二级分类名 </label>
+       <input type="text" name="name" class="item" required="required" placeholde="请输入二级分类名称">
+    </div>
+    <div class="list">
+       <label>分类简述 </label>
+       <textarea name="info" class="item" required="required"></textarea>
+    </div>
+    <div class="option">
+     <button type="submit" class="btn green" style="width:80px;height:30px;line-height:30px;">确定</button>
+     <a class="btn" id="canceltcate" onclick="hiddenform('#acateform')">取消</a>
+    </div>
+   </div>
+  </form>
+  <form action="/server/posts/putSubcate" id="acateeditor" method="post" class="cateform hidden">
+   <div class="form-box">
+    <div class="title">
+     <h3>编辑分类</h3>
+    </div>
+    
+    <div class="list">
+       <label>所属分类: </label>
+       <select name="parentCate" id="cateselect">
+       <% topCate.forEach(function(item){ %>
+        <option value="<%= item._id %>" class="item" required="required"> <%= item.name %> </option>
+       <% }) %>
+       </select>
+    </div>
+    <div class="list">
+       <label>二级分类名 </label>
+       <input type="text" name="name" class="item ecatename" required="required">
+    </div>
+    <div class="list">
+       <label>分类简述 </label>
+       <textarea name="info" class="item ecateinfo" required="required"></textarea>
+    </div>
+    <input type="text" name="cateid" class="item hidden" id="acate_id">
+    <div class="option">
+     <button type="submit" class="btn red" style="width:80px;height:30px;line-height:30px;">修改</button>
+     <a class="btn cancel" onclick="hiddenform('#acateeditor')">取消</a>
+    </div>
+   </div>
+  </form>
+ </div>
+</div>

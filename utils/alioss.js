@@ -1,4 +1,4 @@
-const co = require('co')
+// const co = require('co')
 const OSS = require('ali-oss')
 const config = require('../config/index')
 const globalConfig = config[process.env.NODE_ENV || 'development']

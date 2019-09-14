@@ -4,7 +4,6 @@ if (process.env.NODE_ENV === 'production') {
   require('env2')('./.env');
 }
 const { env } = process
-console.log(env)
 
 module.exports = {
 	// development config
@@ -25,7 +24,7 @@ module.exports = {
 			SECRET_KEY: `${env.SECRET_KEY}`,
 			bucket: `${env.bucket}`,
 			baseUrl: `${env.baseUrl}`
-		},
+		}
 	},
 	// production config
 	production: {
@@ -45,6 +44,6 @@ module.exports = {
 			SECRET_KEY: `${env.SECRET_KEY}`,
 			bucket: `${env.bucket}`,
 			baseUrl: `${env.baseUrl}`
-		},
+		}
 	}
 }
